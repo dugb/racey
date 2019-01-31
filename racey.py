@@ -13,6 +13,9 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
 
+block_color = (52,115,255)
+score_color = green
+
 car_width = 73
 car_height = 73
 
@@ -20,6 +23,12 @@ gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('A bit Racey')
 clock = pygame.time.Clock()
 carImg = pygame.image.load('racecar.png')
+
+
+def things_dodged(count):
+    font = pygame.font.SysFont(None, 25)
+    text = font.render("Dodged: " + str(count), True, score_color)
+    gameDisplay.blit(text, (0,0))
 
 
 def things(thingx, thingy, thingw, thingh, color):
@@ -53,10 +62,11 @@ def game_loop():
     x = (display_width * 0.45)
     y = (display_height * 0.8)
     change_x = 0
+    dodged = 0
 
     thing_startx = random.randrange(0, display_width)
     thing_starty = -600
-    thing_speed  = 3
+    thing_speed  = 7
     thing_width  = 100
     thing_height = 100
 
@@ -82,10 +92,11 @@ def game_loop():
         x += change_x
         gameDisplay.fill(white)
 
-        # things(thingx, thingy, thingw, thingh, color):
-        things(thing_startx, thing_starty, thing_width, thing_height, blue)
+        things(thing_startx, thing_starty, thing_width, thing_height, block_color)
         thing_starty += thing_speed
         car(x, y)
+
+        things_dodged(dodged) # draw score last
 
         # car crashes into side of screen
         if x > (display_width - car_width) or x <0:
@@ -95,6 +106,9 @@ def game_loop():
         if thing_starty > display_height:
             thing_starty = 0 - thing_height
             thing_startx = random.randrange(0, display_width)
+            dodged += 1
+            
+
 
         # car crashes into a block
         if y < thing_starty + thing_height and y + car_height > thing_starty:
