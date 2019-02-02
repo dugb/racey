@@ -9,9 +9,11 @@ display_height = 600
 
 white = (255, 255, 255)
 black = (0, 0, 0)
-red = (255, 0, 0)
-green = (0, 255, 0)
+red = (200, 0, 0)
+green = (0, 200, 0)
 blue = (0, 0, 255)
+bright_red = (255, 0, 0)
+bright_green = (0, 255, 0)
 
 block_color = (52,115,255)
 score_color = green
@@ -43,6 +45,7 @@ def text_objects(text, font):
     textSurface = font.render(text, True, red)
     return textSurface, textSurface.get_rect()
 
+
 def message_display(text):
     largeText = pygame.font.Font('freesansbold.ttf', 115)
     TextSurf, TextRect = text_objects(text, largeText)
@@ -56,6 +59,37 @@ def message_display(text):
 def crash():
     message_display('You Crashed!')
 
+
+def game_intro():
+    intro = True
+    text = "A bit Racey"
+
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+
+        gameDisplay.fill(white)
+        largeText = pygame.font.Font('freesansbold.ttf', 115)
+        TextSurf, TextRect = text_objects(text, largeText)
+        TextRect.center = ((display_width/2), (display_height/2))
+        gameDisplay.blit(TextSurf, TextRect)
+
+        mouse = pygame.mouse.get_pos()
+        if 150 + 100 > mouse[0] > 150 and 450 + 50 > mouse[1] > 450:
+            pygame.draw.rect(gameDisplay, bright_green, (150, 450, 100, 50))
+        else:
+            pygame.draw.rect(gameDisplay, green, (150, 450, 100, 50))
+
+        if 550 + 100 > mouse[0] > 550 and 450 + 50 > mouse[1] > 450:
+            pygame.draw.rect(gameDisplay, bright_red, (550, 450, 100, 50))
+        else:
+            pygame.draw.rect(gameDisplay, red, (550, 450, 100, 50))
+
+        pygame.display.update()
+        clock.tick(15)
 
 def game_loop():
     pygame.event.clear()
@@ -118,7 +152,7 @@ def game_loop():
         pygame.display.update()
         clock.tick(60)  # FPS
 
-
+game_intro()
 game_loop()
 pygame.quit()
 quit()
