@@ -42,7 +42,7 @@ def car(x, y):
 
 
 def text_objects(text, font):
-    textSurface = font.render(text, True, red)
+    textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
 
@@ -60,6 +60,29 @@ def crash():
     message_display('You Crashed!')
 
 
+# msg, x coord, y, coord, width, height, inactive color, active color, action
+def button(msg, x, y, w, h, ic, ac, action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+
+    if x + w > mouse[0] > x and y + h > mouse[1] > y:
+        pygame.draw.rect(gameDisplay, ac, (x, y, w, h))
+        if click[0] == 1 and action != None:
+            action()
+    else:
+        pygame.draw.rect(gameDisplay, ic, (x, y, w, h))
+
+    smallText = pygame.font.Font("freesansbold.ttf", 20)
+    textSurf, textRect = text_objects(msg, smallText)
+    textRect.center = ( (x + (w/2)), (y + (h/2)) )
+    gameDisplay.blit(textSurf, textRect)
+
+
+def quitgame():
+    pygame.quit()
+    quit()
+
+
 def game_intro():
     intro = True
     text = "A bit Racey"
@@ -67,8 +90,7 @@ def game_intro():
     while intro:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                quitgame()
 
 
         gameDisplay.fill(white)
@@ -77,16 +99,8 @@ def game_intro():
         TextRect.center = ((display_width/2), (display_height/2))
         gameDisplay.blit(TextSurf, TextRect)
 
-        mouse = pygame.mouse.get_pos()
-        if 150 + 100 > mouse[0] > 150 and 450 + 50 > mouse[1] > 450:
-            pygame.draw.rect(gameDisplay, bright_green, (150, 450, 100, 50))
-        else:
-            pygame.draw.rect(gameDisplay, green, (150, 450, 100, 50))
-
-        if 550 + 100 > mouse[0] > 550 and 450 + 50 > mouse[1] > 450:
-            pygame.draw.rect(gameDisplay, bright_red, (550, 450, 100, 50))
-        else:
-            pygame.draw.rect(gameDisplay, red, (550, 450, 100, 50))
+        button("G0!", 150, 450, 100, 50, green, bright_green, game_loop)
+        button("Quit", 550, 450, 100, 50, red, bright_red, quitgame)
 
         pygame.display.update()
         clock.tick(15)
@@ -141,6 +155,7 @@ def game_loop():
             thing_starty = 0 - thing_height
             thing_startx = random.randrange(0, display_width)
             dodged += 1
+            thing_speed += .5
             
 
 
@@ -154,5 +169,4 @@ def game_loop():
 
 game_intro()
 game_loop()
-pygame.quit()
-quit()
+quitgame()
